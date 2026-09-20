@@ -1,186 +1,58 @@
 import React, { useState } from "react";
-import { MessageSquare, HelpCircle, CheckCircle, RefreshCw, Star, Layers, ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 export default function InterviewGenView({ candidate, job }) {
-  const [selectedCategory, setSelectedCategory] = useState("all"); // all, technical, behavioral, gap
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [expandedId, setExpandedId] = useState("q1");
 
-  // Dynamic question generator tailored to candidate + job
   const questions = [
-    {
-      id: "q1",
-      category: "technical",
-      badge: "Technical Deep-Dive",
-      color: "var(--cyan-primary)",
-      question: `In your work at ${candidate.experienceHistory[0]?.company || 'your previous company'}, you worked with Graph Neural Networks. How do you formulate inductive candidate-job matching compared to transductive GCN when new candidates join the platform?`,
-      whyAsked: `Tests candidate's hands-on understanding of inductive node aggregation (e.g. GraphSAGE) vs transductive models as required for ${job.title}.`,
-      idealAnswer: `Candidate should explain that transductive models require the entire Laplacian matrix during training. Inductive models learn parameter functions W that aggregate sampled local neighbors (1-hop/2-hop). When an unseen candidate arrives, their node embedding is generated on-the-fly from connected skill nodes without retraining.`,
-      rubric: [
-        "1 pt: Confuses inductive and transductive learning.",
-        "3 pts: Explains difference at high level but omits neighborhood sampling.",
-        "5 pts: Mentions aggregator functions (Mean/LSTM), mini-batch loaders, and latency tradeoffs."
-      ]
-    },
-    {
-      id: "q2",
-      category: "system_design",
-      badge: "System Architecture",
-      color: "var(--violet-primary)",
-      question: `How would you architect a real-time candidate recommendation service serving 10M users with sub-100ms P99 latency using PyTorch Geometric and a vector database?`,
-      whyAsked: `Validates candidate's distributed systems ability to deploy graph models in high-throughput production at ${job.company}.`,
-      idealAnswer: `Ideal response includes offline/online hybrid architecture: offline pre-computation of skill/job subgraph embeddings into Milvus/Qdrant, real-time 1-hop candidate aggregation in Go/C++ Triton inference server, and caching frequent subgraphs in Redis.`,
-      rubric: [
-        "1 pt: Only mentions basic Python script.",
-        "3 pts: Mentions vector database but omits graph inference bottlenecks.",
-        "5 pts: Details Triton server, caching layers, HNSW indices, and failover fallbacks."
-      ]
-    },
-    {
-      id: "q3",
-      category: "behavioral",
-      badge: "Behavioral (STAR)",
-      color: "var(--amber-primary)",
-      question: `Tell me about a time when your machine learning model suffered from extreme class imbalance or unexpected screening bias. How did you diagnose and rectify it?`,
-      whyAsked: `Addresses the 95% rejection skew reality highlighted in the Springer 2025 research paper.`,
-      idealAnswer: `Candidate should structure response using STAR: Situation (95% rejection data), Task (improve qualified recall), Action (re-weighting loss function, graph structural homophily, focal loss), Result (boosted minority recall significantly).`,
-      rubric: [
-        "1 pt: Blames data without actionable solution.",
-        "3 pts: Uses standard oversampling without evaluating recall.",
-        "5 pts: Implements loss re-weighting, structural graph signals, and balanced accuracy metrics."
-      ]
-    },
-    {
-      id: "q4",
-      category: "gap",
-      badge: "Skill Gap Probe",
-      color: "var(--rose-primary)",
-      question: `The role at ${job.company} requires proficiency in ${job.requiredSkills[job.requiredSkills.length - 1]?.name || 'distributed infrastructure'}. Could you walk us through an analogous technical challenge you tackled and how you would ramp up on this stack?`,
-      whyAsked: `Tests candidate's adaptability to bridge the identified skill gap.`,
-      idealAnswer: `Candidate demonstrates self-driven learning, citing foundational principles and past instances of mastering new distributed frameworks within weeks.`,
-      rubric: [
-        "1 pt: Defensive or dismissive of the requirement.",
-        "3 pts: States willingness to learn without concrete examples.",
-        "5 pts: Demonstrates strong foundational transferability and clear ramp-up plan."
-      ]
-    }
+    { id: "q1", category: "technical", badge: "Technical Deep-Dive", color: "var(--primary)", question: `In your work at ${candidate.experienceHistory[0]?.company || 'your previous company'}, you worked with Graph Neural Networks. How do you formulate inductive matching compared to transductive GCN?`, whyAsked: `Tests inductive node aggregation understanding for ${job.title}.`, idealAnswer: "Candidate should explain transductive vs inductive models, aggregator functions, and mini-batch loaders.", rubric: ["1 pt: Confuses inductive/transductive.", "3 pts: High-level difference but omits sampling.", "5 pts: Mentions aggregators, latency tradeoffs."] },
+    { id: "q2", category: "system_design", badge: "System Architecture", color: "var(--purple)", question: "How would you architect a real-time candidate recommendation service serving 10M users with sub-100ms latency?", whyAsked: `Validates distributed systems ability for ${job.company}.`, idealAnswer: "Offline subgraph pre-computation, Triton inference server, Redis caching, Milvus HNSW.", rubric: ["1 pt: Basic Python script only.", "3 pts: Mentions vector DB but omits graph inference.", "5 pts: Full architecture with caching, failover."] },
+    { id: "q3", category: "behavioral", badge: "Behavioral (STAR)", color: "var(--amber)", question: "Tell me about a time your model suffered from extreme class imbalance. How did you diagnose and fix it?", whyAsked: "Addresses the 95% rejection skew from the Springer 2025 paper.", idealAnswer: "STAR: Situation (95% rejection), Task (improve recall), Action (re-weighting, focal loss), Result.", rubric: ["1 pt: Blames data without solution.", "3 pts: Standard oversampling only.", "5 pts: Loss re-weighting, structural graph signals, balanced accuracy."] },
+    { id: "q4", category: "gap", badge: "Skill Gap Probe", color: "var(--red)", question: `The role requires ${job.requiredSkills[job.requiredSkills.length - 1]?.name || 'advanced skills'}. Walk us through how you'd ramp up.`, whyAsked: "Tests adaptability to bridge skill gaps.", idealAnswer: "Demonstrates self-driven learning with concrete prior examples.", rubric: ["1 pt: Defensive or dismissive.", "3 pts: Willing but no examples.", "5 pts: Strong transferability, clear ramp-up plan."] }
   ];
 
-  const filteredQuestions = selectedCategory === "all"
-    ? questions
-    : questions.filter(q => q.category === selectedCategory);
+  const filtered = selectedCategory === "all" ? questions : questions.filter(q => q.category === selectedCategory);
 
   return (
     <div className="animate-fade-in">
       <div style={{ marginBottom: "20px" }}>
-        <h2 style={{ fontSize: "1.4rem", marginBottom: "6px" }}>Phase 2: Personalized Interview Question Generation</h2>
-        <p style={{ fontSize: "0.9rem" }}>
-          Generates a comprehensive, candidate-specific interview pack based on candidate background, target role requirements, and identified skill gaps, complete with scoring rubrics and sample answers.
-        </p>
+        <h2 style={{ fontSize: "1.35rem", marginBottom: "6px" }}>Phase 2: Personalized Interview Question Generation</h2>
+        <p style={{ fontSize: "0.88rem" }}>Generates candidate-specific interview packs with scoring rubrics and sample answers.</p>
       </div>
 
-      {/* Filter Tabs */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "20px" }}>
-        <button
-          onClick={() => setSelectedCategory("all")}
-          className={`tab-btn ${selectedCategory === "all" ? "active active-phase2" : ""}`}
-        >
-          All Questions ({questions.length})
-        </button>
-        <button
-          onClick={() => setSelectedCategory("technical")}
-          className={`tab-btn ${selectedCategory === "technical" ? "active active-phase2" : ""}`}
-        >
-          Technical Deep-Dive
-        </button>
-        <button
-          onClick={() => setSelectedCategory("system_design")}
-          className={`tab-btn ${selectedCategory === "system_design" ? "active active-phase2" : ""}`}
-        >
-          System Architecture
-        </button>
-        <button
-          onClick={() => setSelectedCategory("behavioral")}
-          className={`tab-btn ${selectedCategory === "behavioral" ? "active active-phase2" : ""}`}
-        >
-          Behavioral & Ethics
-        </button>
+      <div style={{ display: "flex", gap: "8px", marginBottom: "18px" }}>
+        {[{ key: "all", label: `All (${questions.length})` }, { key: "technical", label: "Technical" }, { key: "system_design", label: "System Design" }, { key: "behavioral", label: "Behavioral" }].map(t => (
+          <button key={t.key} onClick={() => setSelectedCategory(t.key)} className={`tab-btn ${selectedCategory === t.key ? "active active-phase2" : ""}`}>{t.label}</button>
+        ))}
       </div>
 
-      {/* Questions Accordion List */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        {filteredQuestions.map((q) => {
-          const isExpanded = expandedId === q.id;
-
+      <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+        {filtered.map(q => {
+          const isExp = expandedId === q.id;
           return (
-            <div
-              key={q.id}
-              className="glass-card"
-              style={{
-                padding: "20px",
-                border: isExpanded ? `1px solid ${q.color}` : "1px solid var(--border-subtle)",
-                transition: "all var(--transition-normal)"
-              }}
-            >
-              <div
-                onClick={() => setExpandedId(isExpanded ? null : q.id)}
-                style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", cursor: "pointer" }}
-              >
+            <div key={q.id} className="glass-card" style={{ padding: "18px", borderLeft: isExp ? `4px solid ${q.color}` : "4px solid transparent" }}>
+              <div onClick={() => setExpandedId(isExp ? null : q.id)} style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", cursor: "pointer" }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                    <span className="badge" style={{ background: "rgba(255, 255, 255, 0.08)", color: q.color, border: `1px solid ${q.color}` }}>
-                      {q.badge}
-                    </span>
-                    <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Interviewer Guide</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "5px" }}>
+                    <span className="badge" style={{ background: "var(--bg-surface)", color: q.color, border: `1px solid var(--border-subtle)` }}>{q.badge}</span>
                   </div>
-                  <h3 style={{ fontSize: "1.05rem", color: "var(--text-primary)", fontWeight: 600, lineHeight: 1.4 }}>
-                    {q.question}
-                  </h3>
+                  <h3 style={{ fontSize: "1rem", fontWeight: 600, lineHeight: 1.4 }}>{q.question}</h3>
                 </div>
-
-                <button className="btn-secondary" style={{ padding: "6px", marginLeft: "12px" }}>
-                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                </button>
+                <button className="btn-secondary" style={{ padding: "5px", marginLeft: "10px" }}>{isExp ? <ChevronUp size={15} /> : <ChevronDown size={15} />}</button>
               </div>
-
-              {/* Collapsible Rubric & Ideal Answer */}
-              {isExpanded && (
-                <div style={{ marginTop: "16px", paddingTop: "16px", borderTop: "1px solid var(--border-subtle)" }}>
-                  {/* Why Asked */}
-                  <div style={{ marginBottom: "12px", fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-                    <strong style={{ color: "var(--cyan-primary)" }}>Why this is asked: </strong>
-                    {q.whyAsked}
+              {isExp && (
+                <div style={{ marginTop: "14px", paddingTop: "14px", borderTop: "1px solid var(--border-subtle)" }}>
+                  <div style={{ marginBottom: "10px", fontSize: "0.82rem", color: "var(--text-secondary)" }}><strong style={{ color: "var(--primary)" }}>Why asked: </strong>{q.whyAsked}</div>
+                  <div style={{ background: "var(--bg-surface)", padding: "12px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)", marginBottom: "12px" }}>
+                    <div style={{ fontSize: "0.75rem", textTransform: "uppercase", color: "var(--green)", fontWeight: 600, marginBottom: "3px" }}>Expected Answer:</div>
+                    <p style={{ fontSize: "0.82rem", color: "var(--text-primary)", lineHeight: 1.6 }}>{q.idealAnswer}</p>
                   </div>
-
-                  {/* Ideal Candidate Answer */}
-                  <div style={{ background: "var(--bg-surface)", padding: "14px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)", marginBottom: "14px" }}>
-                    <div style={{ fontSize: "0.8rem", textTransform: "uppercase", color: "var(--emerald-primary)", fontWeight: 600, marginBottom: "4px" }}>
-                      Expected Ideal Answer Highlights:
-                    </div>
-                    <p style={{ fontSize: "0.85rem", color: "var(--text-primary)", lineHeight: 1.6 }}>
-                      {q.idealAnswer}
-                    </p>
-                  </div>
-
-                  {/* Scoring Rubric */}
                   <div>
-                    <div style={{ fontSize: "0.8rem", textTransform: "uppercase", color: "var(--text-muted)", fontWeight: 600, marginBottom: "8px" }}>
-                      Candidate Evaluation Rubric:
-                    </div>
-                    <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                      {q.rubric.map((r, rIdx) => (
-                        <div
-                          key={rIdx}
-                          style={{
-                            fontSize: "0.8rem",
-                            color: "var(--text-secondary)",
-                            background: "var(--bg-canvas)",
-                            padding: "8px 12px",
-                            borderRadius: "var(--radius-sm)",
-                            borderLeft: `3px solid ${rIdx === 2 ? 'var(--emerald-primary)' : rIdx === 1 ? 'var(--amber-primary)' : 'var(--rose-primary)'}`
-                          }}
-                        >
-                          {r}
-                        </div>
+                    <div style={{ fontSize: "0.75rem", textTransform: "uppercase", color: "var(--text-muted)", fontWeight: 600, marginBottom: "6px" }}>Rubric:</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "5px" }}>
+                      {q.rubric.map((r, ri) => (
+                        <div key={ri} style={{ fontSize: "0.78rem", color: "var(--text-secondary)", background: "var(--bg-surface)", padding: "7px 10px", borderRadius: "var(--radius-sm)", borderLeft: `3px solid ${ri === 2 ? 'var(--green)' : ri === 1 ? 'var(--amber)' : 'var(--red)'}` }}>{r}</div>
                       ))}
                     </div>
                   </div>

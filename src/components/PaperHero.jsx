@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BookOpen, ExternalLink, ChevronDown, ChevronUp, Network, Cpu, Database, CheckCircle, Sparkles } from "lucide-react";
+import { BookOpen, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { PAPER_METADATA } from "../data/benchmarkData";
 
 export default function PaperHero({ activeModule, onSelectModule }) {
@@ -21,23 +21,11 @@ export default function PaperHero({ activeModule, onSelectModule }) {
   ];
 
   return (
-    <div className="glass-card" style={{ marginBottom: "28px", border: "1px solid var(--border-medium)", position: "relative", overflow: "hidden" }}>
-      {/* Background subtle neon glow */}
-      <div style={{
-        position: "absolute",
-        top: "-80px",
-        right: "-80px",
-        width: "300px",
-        height: "300px",
-        borderRadius: "50%",
-        background: "radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(6, 182, 212, 0.05) 50%, transparent 70%)",
-        pointerEvents: "none"
-      }} />
-
+    <div className="glass-card" style={{ marginBottom: "28px" }}>
       {/* Top Paper Badges */}
-      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", marginBottom: "14px" }}>
         <span className="badge badge-cyan">
-          <BookOpen size={12} /> {PAPER_METADATA.journal}
+          <BookOpen size={11} /> {PAPER_METADATA.journal}
         </span>
         <span className="badge badge-violet">
           {PAPER_METADATA.publisher} (2025)
@@ -47,35 +35,31 @@ export default function PaperHero({ activeModule, onSelectModule }) {
           target="_blank"
           rel="noopener noreferrer"
           className="badge"
-          style={{ background: "rgba(255, 255, 255, 0.06)", color: "var(--text-secondary)", border: "1px solid var(--border-subtle)" }}
+          style={{ background: "var(--bg-surface)", color: "var(--text-secondary)", border: "1px solid var(--border-subtle)", textDecoration: "none" }}
         >
-          DOI: {PAPER_METADATA.doi} <ExternalLink size={10} style={{ marginLeft: "4px" }} />
+          DOI: {PAPER_METADATA.doi} <ExternalLink size={10} style={{ marginLeft: "3px" }} />
         </a>
-        <span className="badge badge-emerald">
-          Balanced Acc: 65.4% (vs 55.0% MLP)
-        </span>
-        <span className="badge badge-amber">
-          Minority Recall: 48.9% (vs 8.5% MLP)
-        </span>
+        <span className="badge badge-emerald">Balanced Acc: 65.4% (vs 55.0% MLP)</span>
+        <span className="badge badge-amber">Minority Recall: 48.9% (vs 8.5% MLP)</span>
       </div>
 
       {/* Title & Authors */}
-      <h1 style={{ fontSize: "1.85rem", lineHeight: 1.25, marginBottom: "10px", fontWeight: 800 }}>
+      <h1 style={{ fontSize: "1.7rem", lineHeight: 1.3, marginBottom: "8px", fontWeight: 700 }}>
         {PAPER_METADATA.title}
       </h1>
-      <p style={{ fontSize: "0.95rem", color: "var(--cyan-primary)", marginBottom: "16px", fontWeight: 500 }}>
-        {PAPER_METADATA.authors.join(" • ")}
+      <p style={{ fontSize: "0.92rem", color: "var(--primary)", marginBottom: "14px", fontWeight: 500 }}>
+        {PAPER_METADATA.authors.join(" · ")}
       </p>
 
       {/* Abstract Toggle */}
-      <div style={{ marginBottom: "20px" }}>
+      <div style={{ marginBottom: "18px" }}>
         <button
           onClick={() => setShowAbstract(!showAbstract)}
           className="btn-secondary"
           style={{ padding: "6px 14px", fontSize: "0.8rem", borderRadius: "var(--radius-full)" }}
         >
           {showAbstract ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          {showAbstract ? "Hide Academic Abstract" : "Read Springer Paper Abstract"}
+          {showAbstract ? "Hide Abstract" : "Read Paper Abstract"}
         </button>
 
         {showAbstract && (
@@ -85,7 +69,7 @@ export default function PaperHero({ activeModule, onSelectModule }) {
             background: "var(--bg-surface)",
             borderRadius: "var(--radius-md)",
             border: "1px solid var(--border-subtle)",
-            fontSize: "0.9rem",
+            fontSize: "0.88rem",
             color: "var(--text-secondary)",
             lineHeight: 1.7
           }}>
@@ -94,23 +78,18 @@ export default function PaperHero({ activeModule, onSelectModule }) {
         )}
       </div>
 
-      {/* End-to-End Pipeline Navigation Bar */}
+      {/* Pipeline Navigation */}
       <div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
-          <span style={{ fontSize: "0.8rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-muted)" }}>
-            Interactive System Flow (Phase 1 Paper + Phase 2 Enhancements)
+          <span style={{ fontSize: "0.78rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", color: "var(--text-muted)" }}>
+            System Pipeline (Phase 1 + Phase 2)
           </span>
-          <span style={{ fontSize: "0.75rem", color: "var(--cyan-primary)" }}>
-            Click any step to inspect module
+          <span style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}>
+            Click any step to explore
           </span>
         </div>
 
-        <div style={{
-          display: "flex",
-          gap: "8px",
-          overflowX: "auto",
-          paddingBottom: "8px"
-        }}>
+        <div style={{ display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "6px" }}>
           {pipelineStages.map((stage) => {
             const isActive = activeModule === stage.id;
             const isPhase1 = stage.phase === 1;
@@ -121,18 +100,18 @@ export default function PaperHero({ activeModule, onSelectModule }) {
                 onClick={() => onSelectModule(stage.id)}
                 style={{
                   whiteSpace: "nowrap",
-                  padding: "8px 14px",
+                  padding: "7px 12px",
                   borderRadius: "var(--radius-md)",
-                  fontSize: "0.8rem",
-                  fontWeight: isActive ? 600 : 500,
+                  fontSize: "0.78rem",
+                  fontWeight: isActive ? 600 : 400,
                   background: isActive
-                    ? (isPhase1 ? "rgba(6, 182, 212, 0.2)" : "rgba(139, 92, 246, 0.2)")
+                    ? (isPhase1 ? "var(--primary-light)" : "var(--purple-light)")
                     : "var(--bg-surface)",
                   color: isActive
-                    ? (isPhase1 ? "var(--cyan-primary)" : "var(--violet-primary)")
+                    ? (isPhase1 ? "var(--primary)" : "var(--purple)")
                     : "var(--text-secondary)",
                   border: isActive
-                    ? `1px solid ${isPhase1 ? 'var(--cyan-primary)' : 'var(--violet-primary)'}`
+                    ? `1px solid ${isPhase1 ? 'var(--primary-border)' : 'var(--purple-border)'}`
                     : "1px solid var(--border-subtle)",
                   cursor: "pointer",
                   transition: "all var(--transition-fast)"

@@ -1,5 +1,5 @@
 import React from "react";
-import { Network, User, Briefcase, ChevronDown, Sparkles } from "lucide-react";
+import { Network, User, Briefcase } from "lucide-react";
 import { CANDIDATES_DATA } from "../data/candidatesData";
 import { JOBS_DATA } from "../data/jobsData";
 
@@ -18,9 +18,8 @@ export default function Navigation({
       position: "sticky",
       top: 0,
       zIndex: 100,
-      background: "rgba(9, 13, 22, 0.85)",
-      backdropFilter: "blur(16px)",
-      WebkitBackdropFilter: "blur(16px)",
+      background: "rgba(255, 255, 255, 0.95)",
+      backdropFilter: "blur(8px)",
       borderBottom: "1px solid var(--border-subtle)",
       padding: "12px 24px",
       marginBottom: "24px"
@@ -34,25 +33,23 @@ export default function Navigation({
         flexWrap: "wrap",
         gap: "14px"
       }}>
-        {/* Brand & Springer 2025 Tag */}
+        {/* Brand */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <div style={{
             width: "36px",
             height: "36px",
             borderRadius: "var(--radius-md)",
-            background: "linear-gradient(135deg, var(--cyan-primary) 0%, var(--violet-primary) 100%)",
+            background: "var(--primary)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "white",
-            boxShadow: "0 0 16px rgba(6, 182, 212, 0.35)"
+            color: "white"
           }}>
             <Network size={20} />
           </div>
-
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <span style={{ fontFamily: "var(--font-heading)", fontWeight: 800, fontSize: "1.1rem", color: "var(--text-primary)" }}>
+              <span style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "1.05rem", color: "var(--text-primary)" }}>
                 GNN Candidate-Job Matching
               </span>
               <span className="badge badge-cyan" style={{ fontSize: "0.65rem", padding: "2px 8px" }}>
@@ -65,11 +62,10 @@ export default function Navigation({
           </div>
         </div>
 
-        {/* Global Selectors: Candidate & Job */}
+        {/* Global Selectors */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
-          {/* Candidate Dropdown */}
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <User size={14} color="var(--cyan-primary)" />
+            <User size={14} color="var(--primary)" />
             <select
               value={activeCandidate.id}
               onChange={e => {
@@ -87,9 +83,8 @@ export default function Navigation({
             </select>
           </div>
 
-          {/* Job Dropdown */}
           <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <Briefcase size={14} color="var(--violet-primary)" />
+            <Briefcase size={14} color="var(--purple)" />
             <select
               value={activeJob.id}
               onChange={e => {
@@ -107,7 +102,7 @@ export default function Navigation({
             </select>
           </div>
 
-          {/* Phase 1 vs Phase 2 Toggle */}
+          {/* Phase Toggle */}
           <div style={{ display: "flex", background: "var(--bg-surface)", padding: "3px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)" }}>
             <button
               onClick={() => onSelectPhase(1)}
@@ -115,10 +110,10 @@ export default function Navigation({
                 padding: "6px 12px",
                 borderRadius: "var(--radius-sm)",
                 fontSize: "0.78rem",
-                fontWeight: activePhase === 1 ? 700 : 500,
-                background: activePhase === 1 ? "rgba(6, 182, 212, 0.2)" : "transparent",
-                color: activePhase === 1 ? "var(--cyan-primary)" : "var(--text-secondary)",
-                border: activePhase === 1 ? "1px solid var(--cyan-primary)" : "1px solid transparent",
+                fontWeight: activePhase === 1 ? 600 : 400,
+                background: activePhase === 1 ? "var(--primary-light)" : "transparent",
+                color: activePhase === 1 ? "var(--primary)" : "var(--text-secondary)",
+                border: activePhase === 1 ? "1px solid var(--primary-border)" : "1px solid transparent",
                 cursor: "pointer"
               }}
             >
@@ -130,10 +125,10 @@ export default function Navigation({
                 padding: "6px 12px",
                 borderRadius: "var(--radius-sm)",
                 fontSize: "0.78rem",
-                fontWeight: activePhase === 2 ? 700 : 500,
-                background: activePhase === 2 ? "rgba(139, 92, 246, 0.2)" : "transparent",
-                color: activePhase === 2 ? "var(--violet-primary)" : "var(--text-secondary)",
-                border: activePhase === 2 ? "1px solid var(--violet-primary)" : "1px solid transparent",
+                fontWeight: activePhase === 2 ? 600 : 400,
+                background: activePhase === 2 ? "var(--purple-light)" : "transparent",
+                color: activePhase === 2 ? "var(--purple)" : "var(--text-secondary)",
+                border: activePhase === 2 ? "1px solid var(--purple-border)" : "1px solid transparent",
                 cursor: "pointer"
               }}
             >

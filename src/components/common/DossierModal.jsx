@@ -1,178 +1,88 @@
 import React from "react";
-import { X, Printer, Download, CheckCircle2, AlertTriangle, ShieldCheck, Sparkles } from "lucide-react";
+import { X, Printer, CheckCircle2, AlertTriangle, ShieldCheck, Sparkles } from "lucide-react";
 
 export default function DossierModal({ candidate, job, gnnResult, agentData, isOpen, onClose }) {
   if (!isOpen || !candidate || !job || !gnnResult) return null;
-
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
-    <div style={{
-      position: "fixed",
-      inset: 0,
-      backgroundColor: "rgba(9, 13, 22, 0.85)",
-      backdropFilter: "blur(12px)",
-      zIndex: 1000,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "20px"
-    }}>
-      <div className="glass-card" style={{
-        maxWidth: "850px",
-        width: "100%",
-        maxHeight: "90vh",
-        overflowY: "auto",
-        background: "var(--bg-surface-elevated)",
-        border: "1px solid var(--border-medium)",
-        borderRadius: "var(--radius-xl)",
-        padding: "32px",
-        boxShadow: "var(--shadow-lg)"
-      }}>
-        {/* Modal Top Actions */}
+    <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.4)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
+      <div style={{ maxWidth: "850px", width: "100%", maxHeight: "90vh", overflowY: "auto", background: "white", border: "1px solid var(--border-medium)", borderRadius: "var(--radius-xl)", padding: "32px", boxShadow: "var(--shadow-lg)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "24px", borderBottom: "1px solid var(--border-subtle)", paddingBottom: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span className="badge badge-cyan">Dossier Evaluation Report</span>
-            <span className="badge badge-violet">Springer 2025 GNN Inductive Engine</span>
+            <span className="badge badge-cyan">Evaluation Report</span>
+            <span className="badge badge-violet">Springer 2025 GNN</span>
           </div>
           <div style={{ display: "flex", gap: "8px" }}>
-            <button onClick={handlePrint} className="btn-secondary" style={{ padding: "6px 14px" }}>
-              <Printer size={15} /> Print / Save PDF
-            </button>
-            <button onClick={onClose} className="btn-secondary" style={{ padding: "6px 10px" }}>
-              <X size={16} />
-            </button>
+            <button onClick={() => window.print()} className="btn-secondary" style={{ padding: "6px 14px" }}><Printer size={14} /> Print</button>
+            <button onClick={onClose} className="btn-secondary" style={{ padding: "6px 10px" }}><X size={15} /></button>
           </div>
         </div>
 
-        {/* Dossier Header */}
-        <div style={{ display: "flex", gap: "24px", alignItems: "center", marginBottom: "28px", background: "var(--bg-surface)", padding: "20px", borderRadius: "var(--radius-lg)", border: "1px solid var(--border-subtle)" }}>
-          <img
-            src={candidate.avatar}
-            alt={candidate.name}
-            style={{ width: "70px", height: "70px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--cyan-primary)" }}
-          />
+        <div style={{ display: "flex", gap: "20px", alignItems: "center", marginBottom: "24px", background: "var(--bg-surface)", padding: "18px", borderRadius: "var(--radius-lg)", border: "1px solid var(--border-subtle)" }}>
+          <img src={candidate.avatar} alt={candidate.name} style={{ width: "60px", height: "60px", borderRadius: "50%", objectFit: "cover", border: "2px solid var(--primary-border)" }} />
           <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: "1.5rem", marginBottom: "4px" }}>{candidate.name}</h2>
-            <p style={{ color: "var(--cyan-primary)", fontWeight: 500, marginBottom: "4px" }}>
-              Applying for: <span style={{ color: "var(--text-primary)" }}>{job.title}</span> at <span style={{ color: "var(--violet-primary)" }}>{job.company}</span>
-            </p>
-            <div style={{ display: "flex", gap: "12px", fontSize: "0.8rem", color: "var(--text-muted)" }}>
-              <span>{candidate.location}</span>
-              <span>•</span>
-              <span>{candidate.yearsExperience} yrs Experience</span>
-              <span>•</span>
-              <span>{candidate.education.degree}</span>
-            </div>
+            <h2 style={{ fontSize: "1.35rem", marginBottom: "3px" }}>{candidate.name}</h2>
+            <p style={{ fontSize: "0.85rem", color: "var(--primary)", fontWeight: 500, marginBottom: "3px" }}>Applying for: <span style={{ color: "var(--text-primary)" }}>{job.title}</span> at <span style={{ color: "var(--purple)" }}>{job.company}</span></p>
+            <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>{candidate.location} · {candidate.yearsExperience} yrs · {candidate.education.degree}</div>
           </div>
-
-          {/* Overall Match Score */}
-          <div style={{ textAlign: "center", background: "var(--bg-canvas)", padding: "14px 22px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-medium)" }}>
-            <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--cyan-primary)", lineHeight: 1 }}>
-              {gnnResult.matchScore}%
-            </div>
-            <div style={{ fontSize: "0.75rem", textTransform: "uppercase", color: "var(--text-muted)", marginTop: "4px" }}>
-              Inductive GNN Score
-            </div>
+          <div style={{ textAlign: "center", background: "var(--primary-light)", padding: "12px 20px", borderRadius: "var(--radius-md)", border: "1px solid var(--primary-border)" }}>
+            <div style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--primary)", lineHeight: 1 }}>{gnnResult.matchScore}%</div>
+            <div style={{ fontSize: "0.7rem", textTransform: "uppercase", color: "var(--text-muted)", marginTop: "3px" }}>GNN Score</div>
           </div>
         </div>
 
-        {/* Inductive GNN Breakdown vs Baseline */}
-        <div style={{ marginBottom: "28px" }}>
-          <h3 style={{ fontSize: "1.1rem", marginBottom: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
-            <Sparkles size={18} color="var(--cyan-primary)" />
-            Inductive Link Prediction & Benchmark Contrast
-          </h3>
-          <div className="grid-3" style={{ marginBottom: "14px" }}>
-            <div style={{ background: "var(--bg-surface)", padding: "14px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)" }}>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Inductive GNN (Ours)</div>
-              <div style={{ fontSize: "1.4rem", fontWeight: 700, color: "var(--cyan-primary)" }}>{gnnResult.matchScore}%</div>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "4px" }}>Balanced Acc: 65.4% | Rec: 48.9%</div>
-            </div>
-            <div style={{ background: "var(--bg-surface)", padding: "14px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)" }}>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>MLP Baseline</div>
-              <div style={{ fontSize: "1.4rem", fontWeight: 700, color: "var(--violet-primary)" }}>{gnnResult.mlpBaselineScore}%</div>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "4px" }}>Balanced Acc: 55.0% | Rec: 8.5%</div>
-            </div>
-            <div style={{ background: "var(--bg-surface)", padding: "14px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)" }}>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>Cosine Similarity</div>
-              <div style={{ fontSize: "1.4rem", fontWeight: 700, color: "var(--text-muted)" }}>{gnnResult.cosineBaselineScore}%</div>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "4px" }}>Balanced Acc: 51.2% | Rec: 6.2%</div>
-            </div>
+        <div style={{ marginBottom: "24px" }}>
+          <h3 style={{ fontSize: "1.05rem", marginBottom: "12px", display: "flex", alignItems: "center", gap: "7px" }}><Sparkles size={16} color="var(--primary)" /> Benchmark Comparison</h3>
+          <div className="grid-3">
+            {[
+              { label: "Inductive GNN (Ours)", score: gnnResult.matchScore, color: "var(--primary)", sub: "Bal. Acc: 65.4% | Rec: 48.9%" },
+              { label: "MLP Baseline", score: gnnResult.mlpBaselineScore, color: "var(--purple)", sub: "Bal. Acc: 55.0% | Rec: 8.5%" },
+              { label: "Cosine Similarity", score: gnnResult.cosineBaselineScore, color: "var(--text-muted)", sub: "Bal. Acc: 51.2% | Rec: 6.2%" }
+            ].map((m, i) => (
+              <div key={i} style={{ background: "var(--bg-surface)", padding: "12px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)" }}>
+                <div style={{ fontSize: "0.78rem", color: "var(--text-muted)" }}>{m.label}</div>
+                <div style={{ fontSize: "1.3rem", fontWeight: 700, color: m.color }}>{m.score}%</div>
+                <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", marginTop: "3px" }}>{m.sub}</div>
+              </div>
+            ))}
           </div>
-          <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-            *The Inductive GNN outperforms standard neural baselines by explicitly modeling relational 2-hop skill dependencies and overcoming the 95% rejection class imbalance.
-          </p>
         </div>
 
-        {/* Skill Alignment & Gaps */}
-        <div style={{ marginBottom: "28px" }}>
-          <h3 style={{ fontSize: "1.1rem", marginBottom: "14px" }}>Skill Alignment Breakdown</h3>
+        <div style={{ marginBottom: "24px" }}>
+          <h3 style={{ fontSize: "1.05rem", marginBottom: "12px" }}>Skill Alignment</h3>
           <div className="grid-2">
-            <div style={{ background: "rgba(16, 185, 129, 0.06)", border: "1px solid rgba(16, 185, 129, 0.2)", padding: "16px", borderRadius: "var(--radius-md)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--emerald-primary)", fontWeight: 600, fontSize: "0.9rem", marginBottom: "8px" }}>
-                <CheckCircle2 size={16} /> Matched Competencies ({gnnResult.matchedSkills.length})
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                {gnnResult.matchedSkills.map((s, idx) => (
-                  <span key={idx} className="badge badge-emerald">{s.name}</span>
-                ))}
-              </div>
+            <div style={{ background: "var(--green-light)", border: "1px solid var(--green-border)", padding: "14px", borderRadius: "var(--radius-md)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "7px", color: "var(--green)", fontWeight: 600, fontSize: "0.88rem", marginBottom: "8px" }}><CheckCircle2 size={15} /> Matched ({gnnResult.matchedSkills.length})</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>{gnnResult.matchedSkills.map((s, i) => <span key={i} className="badge badge-emerald">{s.name}</span>)}</div>
             </div>
-
-            <div style={{ background: "rgba(244, 63, 94, 0.06)", border: "1px solid rgba(244, 63, 94, 0.2)", padding: "16px", borderRadius: "var(--radius-md)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--rose-primary)", fontWeight: 600, fontSize: "0.9rem", marginBottom: "8px" }}>
-                <AlertTriangle size={16} /> Missing Critical Gaps ({gnnResult.missingSkills.length})
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                {gnnResult.missingSkills.length > 0 ? (
-                  gnnResult.missingSkills.map((s, idx) => (
-                    <span key={idx} className="badge badge-rose">{s.name}</span>
-                  ))
-                ) : (
-                  <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>None detected. Full skill coverage.</span>
-                )}
-              </div>
+            <div style={{ background: "var(--red-light)", border: "1px solid var(--red-border)", padding: "14px", borderRadius: "var(--radius-md)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "7px", color: "var(--red)", fontWeight: 600, fontSize: "0.88rem", marginBottom: "8px" }}><AlertTriangle size={15} /> Gaps ({gnnResult.missingSkills.length})</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>{gnnResult.missingSkills.length > 0 ? gnnResult.missingSkills.map((s, i) => <span key={i} className="badge badge-rose">{s.name}</span>) : <span style={{ fontSize: "0.82rem", color: "var(--text-muted)" }}>Full coverage.</span>}</div>
             </div>
           </div>
         </div>
 
-        {/* Multi-Agent Recommendation */}
         {agentData && (
-          <div style={{ marginBottom: "24px", background: "var(--bg-surface)", padding: "20px", borderRadius: "var(--radius-lg)", border: "1px solid var(--border-subtle)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
-              <h3 style={{ fontSize: "1.1rem", display: "flex", alignItems: "center", gap: "8px" }}>
-                <ShieldCheck size={18} color="var(--emerald-primary)" />
-                Multi-Agent Autonomous Recruiter Consensus
-              </h3>
-              <span className="badge" style={{ background: "rgba(16, 185, 129, 0.15)", color: agentData.consensus.badgeColor, border: `1px solid ${agentData.consensus.badgeColor}` }}>
-                {agentData.consensus.recommendation}
-              </span>
+          <div style={{ marginBottom: "24px", background: "var(--bg-surface)", padding: "18px", borderRadius: "var(--radius-lg)", border: "1px solid var(--border-subtle)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "10px" }}>
+              <h3 style={{ fontSize: "1.05rem", display: "flex", alignItems: "center", gap: "7px" }}><ShieldCheck size={16} color="var(--green)" /> Multi-Agent Consensus</h3>
+              <span className="badge" style={{ background: "var(--green-light)", color: "var(--green)", border: "1px solid var(--green-border)" }}>{agentData.consensus.recommendation}</span>
             </div>
-            <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "16px" }}>
-              {agentData.consensus.summary}
-            </p>
+            <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginBottom: "14px" }}>{agentData.consensus.summary}</p>
             <div className="grid-2">
-              {agentData.agents.map(agent => (
-                <div key={agent.id} style={{ background: "var(--bg-surface-elevated)", padding: "12px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.8rem", marginBottom: "4px" }}>
-                    <strong style={{ color: agent.color }}>{agent.avatar} {agent.name} ({agent.role})</strong>
-                    <span style={{ color: "var(--text-muted)" }}>{agent.verdict}</span>
+              {agentData.agents.map(a => (
+                <div key={a.id} style={{ background: "white", padding: "10px", borderRadius: "var(--radius-md)", border: "1px solid var(--border-subtle)" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.78rem", marginBottom: "4px" }}>
+                    <strong>{a.avatar} {a.name} ({a.role})</strong>
+                    <span style={{ color: "var(--text-muted)" }}>{a.verdict}</span>
                   </div>
-                  <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>{agent.statement}</p>
+                  <p style={{ fontSize: "0.78rem", color: "var(--text-secondary)" }}>{a.statement}</p>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        <div style={{ textAlign: "right", marginTop: "24px" }}>
-          <button onClick={onClose} className="btn-primary" style={{ padding: "10px 24px" }}>
-            Done
-          </button>
-        </div>
+        <div style={{ textAlign: "right" }}><button onClick={onClose} className="btn-primary" style={{ padding: "10px 24px" }}>Done</button></div>
       </div>
     </div>
   );
